@@ -3,7 +3,7 @@ import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function SignupPage() {
+export default function SignUpPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
