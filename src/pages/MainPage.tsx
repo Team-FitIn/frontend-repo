@@ -5,25 +5,25 @@ const collections = [
   {
     id: 1,
     title: "New Cyber-\nActive\nCollection",
-    image: "/main_page_img/1.1.png",
+    image: "/Main-page_img/1.1.png",
     align: "left",
   },
   {
     id: 2,
     title: "Minimalist\nKnitwear",
-    image: "/main_page_img/2.1.png",
+    image: "/Main-page_img/2.1.png",
     align: "left",
   },
   {
     id: 3,
     title: "Raw Denim &\nClassic White",
-    image: "/main_page_img/3.1.png",
+    image: "/Main-page_img/3.1.png",
     align: "left",
   },
   {
     id: 4,
     title: "Urban\nUtility",
-    image: "/main_page_img/5.1.png",
+    image: "/Main-page_img/4.1.png",
     align: "left",
   },
 ];
@@ -68,11 +68,11 @@ export default function MainHomePage() {
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             
-            {/* 오버레이 (이미지가 밝을 경우 텍스트 가독성을 위해 살짝 추가 가능) */}
+            {/* 오버레이 */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
 
             {/* 컬렉션 텍스트 */}
-            <div className="absolute inset-0 flex flex-center items-center px-8">
+            <div className="absolute inset-0 flex items-center px-8">
               <h2 className="text-[15px] font-medium leading-tight text-gray-800 whitespace-pre-line">
                 {item.title}
               </h2>
@@ -80,8 +80,6 @@ export default function MainHomePage() {
           </motion.div>
         ))}
       </main>
-
-    
     </div>
   );
 }
