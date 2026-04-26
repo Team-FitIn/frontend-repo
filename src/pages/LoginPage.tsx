@@ -116,7 +116,7 @@ export default function LoginPage() {
 
         <div className="mt-10 pt-8 border-t border-gray-50 text-center text-sm">
           <span className="text-gray-400">아직 계정이 없으신가요?</span>{" "}
-          <button onClick={() => navigate('/membership')} className="text-[#3D1E5F] font-bold hover:underline ml-1">
+          <button onClick={() => navigate('/SignUpPage')} className="text-[#3D1E5F] font-bold hover:underline ml-1">
             회원가입
           </button>
         </div>
