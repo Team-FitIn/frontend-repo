@@ -1,9 +1,8 @@
-import { motion } from "motion/react";
+import { motion } from "framer-motion"; // motion/react 대신 framer-motion으로 통일
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// 로고 SVG를 컴포넌트 외부로 빼서 코드를 깔끔하게 유지합니다.
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18">
     <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
@@ -19,19 +18,37 @@ const KakaoIcon = () => (
   </svg>
 );
 
-export default function LoginPage() {
+// 💡 메인 페이지에서 로그인 성공 시 신호를 받을 수 있도록 인터페이스 정의
+interface LoginPageProps {
+  onLoginSuccess?: () => void;
+}
+
+export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate();
+  
+  // 라우터 돔 에러 방지를 위한 예외 처리
+  let navigate = () => {};
+  try {
+    const activeNavigate = useNavigate();
+    navigate = activeNavigate;
+  } catch (e) {
+    // 라우터 컨텍스트가 없을 때 에러 크래시 방지
+  }
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login:', { username, password, rememberMe });
+    
+    // 💡 로그인 버튼을 누르면 부모(MainPage)에게 성공 신호를 보냅니다!
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8F9FB] px-4">
+    <div className="py-6 flex items-center justify-center bg-[#F8F9FB] px-4 rounded-3xl">
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,9 +99,9 @@ export default function LoginPage() {
               <span className="text-[13px] text-gray-600 group-hover:text-gray-900 transition-colors">아이디 저장</span>
             </label>
             <div className="text-[13px] text-gray-400">
-              <button type="button" className="hover:text-[#3D1E5F] transition-all">아이디 찾기</button>
+              <button type="button" className="hover:text-[#3D1E5F] transition-all cursor-pointer">아이디 찾기</button>
               <span className="mx-2 opacity-30">|</span>
-              <button type="button" className="hover:text-[#3D1E5F] transition-all">비밀번호 찾기</button>
+              <button type="button" className="hover:text-[#3D1E5F] transition-all cursor-pointer">비밀번호 찾기</button>
             </div>
           </div>
 
@@ -92,7 +109,7 @@ export default function LoginPage() {
             whileHover={{ y: -2, backgroundColor: "#2D1545" }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-4.5 bg-[#3D1E5F] text-white rounded-2xl font-bold shadow-xl shadow-purple-900/20 transition-all mt-8 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-[#3D1E5F] text-white rounded-2xl font-bold shadow-xl shadow-purple-900/20 transition-all mt-8 flex items-center justify-center gap-2 cursor-pointer"
           >
             로그인 <LogIn className="size-5" />
           </motion.button>
@@ -104,11 +121,11 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-3">
-          <button className="w-full flex items-center justify-center py-4 border border-gray-200 rounded-2xl hover:bg-gray-50 transition-all bg-white gap-3 shadow-sm">
+          <button className="w-full flex items-center justify-center py-4 border border-gray-200 rounded-2xl hover:bg-gray-50 transition-all bg-white gap-3 shadow-sm cursor-pointer">
             <GoogleIcon />
             <span className="text-sm font-semibold text-gray-700">구글로 계속하기</span>
           </button>
-          <button className="w-full flex items-center justify-center py-4 bg-[#FEE500] rounded-2xl hover:opacity-90 transition-all gap-3 shadow-sm">
+          <button className="w-full flex items-center justify-center py-4 bg-[#FEE500] rounded-2xl hover:opacity-90 transition-all gap-3 shadow-sm cursor-pointer">
             <KakaoIcon />
             <span className="text-sm font-semibold text-[#191919]">카카오톡으로 계속하기</span>
           </button>
@@ -116,7 +133,7 @@ export default function LoginPage() {
 
         <div className="mt-10 pt-8 border-t border-gray-50 text-center text-sm">
           <span className="text-gray-400">아직 계정이 없으신가요?</span>{" "}
-          <button onClick={() => navigate('/SignUpPage')} className="text-[#3D1E5F] font-bold hover:underline ml-1">
+          <button onClick={() => navigate('/SignUpPage')} className="text-[#3D1E5F] font-bold hover:underline ml-1 cursor-pointer">
             회원가입
           </button>
         </div>

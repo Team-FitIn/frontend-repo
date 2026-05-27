@@ -4,9 +4,6 @@ import { useState } from "react";
 import type { KeyboardEvent, ChangeEvent } from "react";
 
 import LoginPage from "./LoginPage"; 
-// 💡 실제 파일 이름이 'VirtualFitting.tsx'일 가능성이 높아 경로를 수정했습니다.
-// 만약 파일 이름이 다르다면 이 부분을 실제 파일명(확장자 제외)으로 매칭해 주세요.
-import VirtualFittingPage from "./VirtualFitting"; 
 
 const collections = [
   { id: 1, title: "New Cyber-\nActive\nCollection", image: "/Main-page_img/1.1.png" },
@@ -20,7 +17,6 @@ export default function MainHomePage() {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // 로그인 상태 관리 (true: 로그인됨, false: 로그아웃됨)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
 
   const handleSearchSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -179,20 +175,12 @@ export default function MainHomePage() {
                 </button>
               </div>
             ) : (
-              <div className="p-8 relative">
-                {/* 💡 임시로 로그인을 성공시킬 수 있는 마스터 버튼을 상단에 살짝 배치했습니다. */}
-                {/* 나중에 진짜 로그인이 작동하면 이 버튼 영역만 지우시면 됩니다. */}
-                <div className="text-center mb-4">
-                  <button 
-                    onClick={() => { setIsLoggedIn(true); setCurrentPage("mypage"); }}
-                    className="px-3 py-1 bg-[#3D1E5F] text-white text-xs rounded opacity-40 hover:opacity-100 cursor-pointer"
-                  >
-                    개발용 로그인 성공 패스 버튼
-                  </button>
-                </div>
-                
-                {/* 💡 에러 방지를 위해 속성(Prop)을 주지 않고 순수하게 호출합니다 */}
-                <LoginPage />
+              <div className="p-8">
+                {/* 💡 수정한 속성(Prop)을 제대로 내려받아 로그인 버튼 클릭 시 마이페이지로 스위칭되게 연동 */}
+                <LoginPage onLoginSuccess={() => { 
+                  setIsLoggedIn(true); 
+                  setCurrentPage("mypage"); 
+                }} />
               </div>
             )}
           </motion.div>
