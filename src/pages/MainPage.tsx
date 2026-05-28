@@ -4,14 +4,13 @@ import { useState } from "react";
 import type { KeyboardEvent, ChangeEvent } from "react";
 
 import LoginPage from "./LoginPage"; 
-// 💡 [수정] 빌드 에러를 유발하던 VirtualFitting import를 임시 제거했습니다.
 import SearchPage from "./SearchPage"; 
+import SignupPage from "./SignupPage"; // ✅ 추가
 
 export default function MainHomePage() {
   const [currentPage, setCurrentPage] = useState<string>("home");
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
 
   const handleSearchSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -156,7 +155,7 @@ export default function MainHomePage() {
           </motion.div>
         )}
 
-        {/* 5. 💡 [수정] 파일 누락 에러를 방지하기 위해 임시 플레이스홀더 UI로 대체 */}
+        {/* 5. Virtual Fitting Room */}
         {currentPage === "vf" && (
           <motion.div key="vf" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
             <div className="text-center py-24 bg-[#F8F9FB] rounded-3xl border border-dashed border-gray-200 max-w-7xl mx-auto">
@@ -176,9 +175,22 @@ export default function MainHomePage() {
               </div>
             ) : (
               <div className="p-8">
-                <LoginPage onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage("mypage"); }} />
+                {/* ✅ onNavigateToSignUp 추가 */}
+                <LoginPage 
+                  onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage("mypage"); }} 
+                  onNavigateToSignUp={() => setCurrentPage("signup")}
+                />
               </div>
             )}
+          </motion.div>
+        )}
+
+        {/* 7. 회원가입 화면 ✅ 추가 */}
+        {currentPage === "signup" && (
+          <motion.div key="signup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div className="p-8">
+              <SignupPage onNavigateToLogin={() => setCurrentPage("mypage")} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
