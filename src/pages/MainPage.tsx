@@ -4,13 +4,8 @@ import { useState } from "react";
 import type { KeyboardEvent, ChangeEvent } from "react";
 
 import LoginPage from "./LoginPage"; 
-
-const collections = [
-  { id: 1, title: "New Cyber-\nActive\nCollection", image: "/Main-page_img/1.1.png" },
-  { id: 2, title: "Minimalist\nKnitwear", image: "/Main-page_img/2.1.png" },
-  { id: 3, title: "Raw Denim &\nClassic White", image: "/Main-page_img/3.1.png" },
-  { id: 4, title: "Urban\nUtility", image: "/Main-page_img/4.1.png" },
-];
+// 💡 [수정] 빌드 에러를 유발하던 VirtualFitting import를 임시 제거했습니다.
+import SearchPage from "./SearchPage"; 
 
 export default function MainHomePage() {
   const [currentPage, setCurrentPage] = useState<string>("home");
@@ -22,7 +17,7 @@ export default function MainHomePage() {
   const handleSearchSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
       setCurrentPage("search");
-      setSearchOpen(false);
+      setSearchOpen(false); 
     }
   };
 
@@ -32,7 +27,10 @@ export default function MainHomePage() {
       <nav className="bg-white border-b border-gray-50 sticky top-0 z-50">
         <div className="flex items-center justify-between px-8 py-6">
           <div 
-            onClick={() => setCurrentPage("home")}
+            onClick={() => {
+              setCurrentPage("home");
+              setSearchQuery(""); 
+            }}
             className="text-2xl font-black tracking-tighter text-[#3D1E5F] cursor-pointer select-none" 
           >
             FITIN
@@ -79,7 +77,7 @@ export default function MainHomePage() {
           </div>
         </div>
 
-        {/* --- 검색창 --- */}
+        {/* --- 상단 드롭다운 검색창 --- */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -111,8 +109,9 @@ export default function MainHomePage() {
         </AnimatePresence>
       </nav>
 
-      {/* --- 컨텐츠 영역 --- */}
+      {/* --- 컨텐츠 메인 영역 --- */}
       <AnimatePresence mode="wait">
+        {/* 1. 홈 메인 화면 */}
         {currentPage === "home" && (
           <motion.main 
             key="home"
@@ -135,52 +134,49 @@ export default function MainHomePage() {
           </motion.main>
         )}
 
+        {/* 2. 분리된 SearchPage 호출 영역 */}
         {currentPage === "search" && (
-          <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
-            <h2 className="text-xl font-bold mb-4">" <span className="text-[#3D1E5F]">{searchQuery}</span> " 에 대한 검색 결과</h2>
-          </motion.div>
+          <SearchPage 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery} 
+          />
         )}
 
+        {/* 3. 찜한 의류 화면 */}
         {currentPage === "wishlist" && (
           <motion.div key="wishlist" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
             <h2 className="text-xl font-bold mb-4">찜한 의류</h2>
           </motion.div>
         )}
 
+        {/* 4. 장바구니 화면 */}
         {currentPage === "cart" && (
           <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
             <h2 className="text-xl font-bold mb-4">장바구니</h2>
           </motion.div>
         )}
 
-        {/* 가상 피팅룸 컴포넌트 렌더링 */}
+        {/* 5. 💡 [수정] 파일 누락 에러를 방지하기 위해 임시 플레이스홀더 UI로 대체 */}
         {currentPage === "vf" && (
-          <motion.div key="vf" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <VirtualFittingPage />
+          <motion.div key="vf" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
+            <div className="text-center py-24 bg-[#F8F9FB] rounded-3xl border border-dashed border-gray-200 max-w-7xl mx-auto">
+              <h2 className="text-xl font-bold text-gray-800">Virtual Fitting Room</h2>
+              <p className="text-gray-400 text-sm mt-1">가상 피팅룸 기능은 전용 브랜치(feat/vf-page)에서 독립적으로 구현될 예정입니다.</p>
+            </div>
           </motion.div>
         )}
 
-        {/* 마이페이지 진입 시 로그인 체크 및 컴포넌트 분기 */}
+        {/* 6. 마이페이지 화면 */}
         {currentPage === "mypage" && (
           <motion.div key="mypage" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {isLoggedIn ? (
               <div className="p-8">
                 <h2 className="text-xl font-bold mb-4">마이페이지</h2>
-                <p className="text-gray-500">회원님 환영합니다! FITIN 가상 피팅룸 서비스를 마음껏 이용해 보세요.</p>
-                <button 
-                  onClick={() => setIsLoggedIn(false)}
-                  className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded cursor-pointer hover:bg-red-600 transition-colors"
-                >
-                  로그아웃 하기
-                </button>
+                <button onClick={() => setIsLoggedIn(false)} className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded cursor-pointer">로그아웃 하기</button>
               </div>
             ) : (
               <div className="p-8">
-                {/* 💡 수정한 속성(Prop)을 제대로 내려받아 로그인 버튼 클릭 시 마이페이지로 스위칭되게 연동 */}
-                <LoginPage onLoginSuccess={() => { 
-                  setIsLoggedIn(true); 
-                  setCurrentPage("mypage"); 
-                }} />
+                <LoginPage onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage("mypage"); }} />
               </div>
             )}
           </motion.div>
@@ -189,3 +185,10 @@ export default function MainHomePage() {
     </div>
   );
 }
+
+const collections = [
+  { id: 1, title: "New Cyber-\nActive\nCollection", image: "/Main-page_img/1.1.png" },
+  { id: 2, title: "Minimalist\nKnitwear", image: "/Main-page_img/2.1.png" },
+  { id: 3, title: "Raw Denim &\nClassic White", image: "/Main-page_img/3.1.png" },
+  { id: 4, title: "Urban\nUtility", image: "/Main-page_img/4.1.png" },
+];
