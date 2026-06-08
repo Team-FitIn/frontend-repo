@@ -1,36 +1,63 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Search, Heart, User, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import type { KeyboardEvent, ChangeEvent } from "react";
 
-import LoginPage from "./LoginPage"; 
-import SearchPage from "./SearchPage"; 
-import SignupPage from "./SignupPage"; // ✅ 추가
+import LoginPage from "./LoginPage";
+import SearchPage from "./SearchPage";
+import SignUpPage from "./SignUpPage";
+import VirtualFittingPage from "./VirtualFittingPage";
+import WishlistPage from "./WishlistPage";
+
+interface Product {
+  id: number;
+  title: string;
+  price: string;
+  image: string;
+  category: string;
+}
+
+const collections = [
+  { id: 1, title: "New Cyber-\nActive\nCollection", image: "/Main-page_img/1.1.png" },
+  { id: 2, title: "Minimalist\nKnitwear", image: "/Main-page_img/2.1.png" },
+  { id: 3, title: "Raw Denim &\nClassic White", image: "/Main-page_img/3.1.png" },
+  { id: 4, title: "Urban\nUtility", image: "/Main-page_img/4.1.png" },
+];
 
 export default function MainHomePage() {
   const [currentPage, setCurrentPage] = useState<string>("home");
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
 
   const handleSearchSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
       setCurrentPage("search");
-      setSearchOpen(false); 
+      setSearchOpen(false);
     }
+  };
+
+  const handleToggleWish = (product: Product) => {
+    setWishlistItems(prev =>
+      prev.find(p => p.id === product.id)
+        ? prev.filter(p => p.id !== product.id)
+        : [...prev, product]
+    );
+  };
+
+  const handleRemoveWish = (id: number) => {
+    setWishlistItems(prev => prev.filter(p => p.id !== id));
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* --- 네비게이션 바 --- */}
+      {/* 네비게이션 바 */}
       <nav className="bg-white border-b border-gray-50 sticky top-0 z-50">
         <div className="flex items-center justify-between px-8 py-6">
-          <div 
-            onClick={() => {
-              setCurrentPage("home");
-              setSearchQuery(""); 
-            }}
-            className="text-2xl font-black tracking-tighter text-[#3D1E5F] cursor-pointer select-none" 
+          <div
+            onClick={() => { setCurrentPage("home"); setSearchQuery(""); }}
+            className="text-2xl font-black tracking-tighter text-[#3D1E5F] cursor-pointer select-none"
           >
             FITIN
           </div>
@@ -42,32 +69,37 @@ export default function MainHomePage() {
             >
               <Search size={20} />
             </button>
-            
-            <button 
+
+            <button
               onClick={() => setCurrentPage("wishlist")}
-              className={`transition-colors cursor-pointer ${currentPage === "wishlist" ? "text-[#3D1E5F]" : "hover:text-[#3D1E5F]"}`}
+              className={`transition-colors cursor-pointer relative ${currentPage === "wishlist" ? "text-[#3D1E5F]" : "hover:text-[#3D1E5F]"}`}
             >
-              <Heart size={20} />
+              <Heart size={20} fill={currentPage === "wishlist" ? "#3D1E5F" : "none"} />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-rose-400 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {wishlistItems.length}
+                </span>
+              )}
             </button>
 
-            <button 
+            <button
               onClick={() => setCurrentPage("mypage")}
               className={`transition-colors cursor-pointer ${currentPage === "mypage" ? "text-[#3D1E5F]" : "hover:text-[#3D1E5F]"}`}
             >
               <User size={20} />
             </button>
 
-            <div 
-              onClick={() => setCurrentPage("cart")}
-              className="relative cursor-pointer group"
-            >
-              <ShoppingBag size={20} className={`transition-colors ${currentPage === "cart" ? "text-[#3D1E5F]" : "group-hover:text-[#3D1E5F]"}`} />
+            <div onClick={() => setCurrentPage("cart")} className="relative cursor-pointer group">
+              <ShoppingBag
+                size={20}
+                className={`transition-colors ${currentPage === "cart" ? "text-[#3D1E5F]" : "group-hover:text-[#3D1E5F]"}`}
+              />
               <span className="absolute -top-2 -right-2 bg-[#3D1E5F] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 0
               </span>
             </div>
 
-            <button 
+            <button
               onClick={() => setCurrentPage("vf")}
               className={`ml-4 font-bold text-sm transition-all cursor-pointer ${currentPage === "vf" ? "text-[#3D1E5F] scale-110" : "hover:opacity-70"}`}
             >
@@ -76,7 +108,7 @@ export default function MainHomePage() {
           </div>
         </div>
 
-        {/* --- 상단 드롭다운 검색창 --- */}
+        {/* 검색창 */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -93,7 +125,7 @@ export default function MainHomePage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearchSubmit} 
+                  onKeyDown={handleSearchSubmit}
                   placeholder="검색어를 입력하세요 후 Enter..."
                   className="flex-1 text-sm outline-none bg-transparent placeholder:text-gray-400 text-gray-800"
                 />
@@ -108,11 +140,12 @@ export default function MainHomePage() {
         </AnimatePresence>
       </nav>
 
-      {/* --- 컨텐츠 메인 영역 --- */}
+      {/* 컨텐츠 영역 */}
       <AnimatePresence mode="wait">
-        {/* 1. 홈 메인 화면 */}
+
+        {/* 1. 홈 */}
         {currentPage === "home" && (
-          <motion.main 
+          <motion.main
             key="home"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="flex h-[calc(100vh-80px)] overflow-hidden"
@@ -133,51 +166,59 @@ export default function MainHomePage() {
           </motion.main>
         )}
 
-        {/* 2. 분리된 SearchPage 호출 영역 */}
+        {/* 2. 검색 */}
         {currentPage === "search" && (
-          <SearchPage 
-            searchQuery={searchQuery} 
-            setSearchQuery={setSearchQuery} 
-          />
-        )}
-
-        {/* 3. 찜한 의류 화면 */}
-        {currentPage === "wishlist" && (
-          <motion.div key="wishlist" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
-            <h2 className="text-xl font-bold mb-4">찜한 의류</h2>
+          <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <SearchPage
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              wishlist={wishlistItems.map(p => p.id)}
+              onToggleWish={handleToggleWish}
+            />
           </motion.div>
         )}
 
-        {/* 4. 장바구니 화면 */}
+        {/* 3. 위시리스트 */}
+        {currentPage === "wishlist" && (
+          <motion.div key="wishlist" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <WishlistPage
+              wishlist={wishlistItems}
+              onRemove={handleRemoveWish}
+            />
+          </motion.div>
+        )}
+
+        {/* 4. 장바구니 */}
         {currentPage === "cart" && (
           <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
             <h2 className="text-xl font-bold mb-4">장바구니</h2>
           </motion.div>
         )}
 
-        {/* 5. Virtual Fitting Room */}
+        {/* 5. 가상 피팅룸 */}
         {currentPage === "vf" && (
-          <motion.div key="vf" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
-            <div className="text-center py-24 bg-[#F8F9FB] rounded-3xl border border-dashed border-gray-200 max-w-7xl mx-auto">
-              <h2 className="text-xl font-bold text-gray-800">Virtual Fitting Room</h2>
-              <p className="text-gray-400 text-sm mt-1">가상 피팅룸 기능은 전용 브랜치(feat/vf-page)에서 독립적으로 구현될 예정입니다.</p>
-            </div>
+          <motion.div key="vf" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <VirtualFittingPage />
           </motion.div>
         )}
 
-        {/* 6. 마이페이지 화면 */}
+        {/* 6. 마이페이지 */}
         {currentPage === "mypage" && (
           <motion.div key="mypage" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {isLoggedIn ? (
               <div className="p-8">
                 <h2 className="text-xl font-bold mb-4">마이페이지</h2>
-                <button onClick={() => setIsLoggedIn(false)} className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded cursor-pointer">로그아웃 하기</button>
+                <button
+                  onClick={() => setIsLoggedIn(false)}
+                  className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded cursor-pointer hover:bg-red-600 transition-colors"
+                >
+                  로그아웃 하기
+                </button>
               </div>
             ) : (
               <div className="p-8">
-                {/* ✅ onNavigateToSignUp 추가 */}
-                <LoginPage 
-                  onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage("mypage"); }} 
+                <LoginPage
+                  onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage("mypage"); }}
                   onNavigateToSignUp={() => setCurrentPage("signup")}
                 />
               </div>
@@ -185,22 +226,16 @@ export default function MainHomePage() {
           </motion.div>
         )}
 
-        {/* 7. 회원가입 화면 ✅ 추가 */}
+        {/* 7. 회원가입 */}
         {currentPage === "signup" && (
           <motion.div key="signup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="p-8">
-              <SignupPage onNavigateToLogin={() => setCurrentPage("mypage")} />
+              <SignUpPage onNavigateToLogin={() => setCurrentPage("mypage")} />
             </div>
           </motion.div>
         )}
+
       </AnimatePresence>
     </div>
   );
 }
-
-const collections = [
-  { id: 1, title: "New Cyber-\nActive\nCollection", image: "/Main-page_img/1.1.png" },
-  { id: 2, title: "Minimalist\nKnitwear", image: "/Main-page_img/2.1.png" },
-  { id: 3, title: "Raw Denim &\nClassic White", image: "/Main-page_img/3.1.png" },
-  { id: 4, title: "Urban\nUtility", image: "/Main-page_img/4.1.png" },
-];

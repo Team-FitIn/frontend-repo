@@ -1,16 +1,18 @@
 import { motion } from "motion/react";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-export default function SignUpPage() {
+interface SignUpPageProps {
+  onNavigateToLogin?: () => void;
+}
+
+export default function SignUpPage({ onNavigateToLogin }: SignUpPageProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,16 +35,13 @@ export default function SignUpPage() {
         className="w-full max-w-[480px] bg-white p-10 md:p-12 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100"
       >
         <div className="mb-10 text-left">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">
-            시작하기
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">시작하기</h1>
           <p className="text-gray-500 text-[15px] leading-relaxed">
             간편하게 가입하고 FITIN의 모든 서비스를 이용해보세요.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
-          {/* 입력 필드 그룹 */}
           <div className="space-y-5">
             <div className="space-y-2">
               <label className="text-[13px] font-semibold text-gray-700 ml-1">이름</label>
@@ -109,12 +108,11 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* 간격 핵심 수정 부분: mt-12 적용 */}
           <motion.button
             whileHover={{ y: -2, backgroundColor: "#2D1545" }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-4.5 bg-[#3D1E5F] text-white rounded-2xl font-bold shadow-xl shadow-purple-900/20 transition-all mt-12 flex items-center justify-center gap-2 text-base"
+            className="w-full py-4 bg-[#3D1E5F] text-white rounded-2xl font-bold shadow-xl shadow-purple-900/20 transition-all mt-12 flex items-center justify-center gap-2 text-base cursor-pointer"
           >
             가입 완료하기
             <ArrowRight className="size-5" />
@@ -124,8 +122,8 @@ export default function SignUpPage() {
         <div className="mt-10 pt-8 border-t border-gray-100 text-center text-sm">
           <span className="text-gray-400">이미 계정이 있으신가요?</span>{" "}
           <button
-            onClick={() => navigate('/login')}
-            className="text-[#3D1E5F] font-bold hover:underline ml-1.5"
+            onClick={onNavigateToLogin}
+            className="text-[#3D1E5F] font-bold hover:underline ml-1.5 cursor-pointer"
           >
             로그인
           </button>
