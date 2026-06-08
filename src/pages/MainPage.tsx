@@ -8,6 +8,7 @@ import SearchPage from "./SearchPage";
 import SignUpPage from "./SignUpPage";
 import VirtualFittingPage from "./VirtualFittingPage";
 import WishlistPage from "./WishlistPage";
+import CartPage from "./CartPage";
 
 interface Product {
   id: number;
@@ -30,6 +31,7 @@ export default function MainHomePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const [cartCount, setCartCount] = useState<number>(0);
 
   const handleSearchSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
@@ -95,7 +97,7 @@ export default function MainHomePage() {
                 className={`transition-colors ${currentPage === "cart" ? "text-[#3D1E5F]" : "group-hover:text-[#3D1E5F]"}`}
               />
               <span className="absolute -top-2 -right-2 bg-[#3D1E5F] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                0
+                {cartCount}
               </span>
             </div>
 
@@ -190,8 +192,8 @@ export default function MainHomePage() {
 
         {/* 4. 장바구니 */}
         {currentPage === "cart" && (
-          <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-8">
-            <h2 className="text-xl font-bold mb-4">장바구니</h2>
+          <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <CartPage />
           </motion.div>
         )}
 
