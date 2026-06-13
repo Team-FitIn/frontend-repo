@@ -106,33 +106,6 @@ src/
 │   └── OAuthRedirectPage.tsx
 
 └── ...
----
-
-## 🚀 로컬 실행 방법
-
-```bash
-# 1. 레포지토리 클론
-git clone https://github.com/Team-FitIn/frontend-repo.git
-
-# 2. 패키지 설치
-npm install
-
-# 3. 백엔드 API 주소 설정
-# src/api/axios.ts에서 baseURL 변경
-
-# 4. 개발 서버 실행
-npm run dev
-```
-
----
-
-## 👥 팀원
-
-| 역할 | 이름 |
-|------|------|
-| Frontend | 송인석 |
-| Backend | 팀원 |
-| AI | 팀원 |
 
 ---
 
