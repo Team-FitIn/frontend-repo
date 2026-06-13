@@ -4,6 +4,34 @@
 
 ---
 
+## 📸 스크린샷
+
+### 메인 페이지
+![메인 페이지](<img width="1279" height="677" alt="스크린샷 2026-06-13 오후 5 08 21" src="https://github.com/user-attachments/assets/ea6083f2-9223-49f9-94eb-bcc32faa410d" />)
+
+
+### 가상 피팅룸
+![가상 피팅룸](<img width="1280" height="682" alt="스크린샷 2026-06-13 오후 5 03 37" src="https://github.com/user-attachments/assets/fe41e5ad-410d-4b78-8c52-4d820d5fc162" />
+)
+
+### 검색 페이지
+![검색 페이지](<img width="1279" height="679" alt="스크린샷 2026-06-13 오후 5 03 16" src="https://github.com/user-attachments/assets/c99c4ea0-4663-4c75-b39b-cf49f13ecc9a" />)
+
+
+### 위시리스트
+![위시리스트](<img width="1279" height="680" alt="스크린샷 2026-06-13 오후 5 03 25" src="https://github.com/user-attachments/assets/cfa7c4a3-de02-4dc7-bc93-a837c38337b7" />)
+
+
+### 로그인
+![로그인](<img width="1277" height="680" alt="스크린샷 2026-06-13 오후 5 03 00" src="https://github.com/user-attachments/assets/123e783d-1ed4-4573-9fd4-822ae26192b7" />)
+
+
+### 마이페이지
+![마이페이지](<img width="1269" height="679" alt="스크린샷 2026-06-13 오후 5 08 14" src="https://github.com/user-attachments/assets/42013dfb-9385-46ee-bd9a-0ad407c424c7" />)
+
+
+---
+
 ## 📌 프로젝트 소개
 
 FITIN은 사용자가 얼굴 사진과 의류를 선택하면 AI가 가상으로 옷을 입혀주는 패션 플랫폼입니다.  
