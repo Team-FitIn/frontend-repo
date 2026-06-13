@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Heart, User, ShoppingBag, X } from "lucide-react";
+import { Search, Heart, User, X } from "lucide-react";
 import { useState } from "react";
 import type { KeyboardEvent, ChangeEvent } from "react";
 
@@ -8,7 +8,7 @@ import SearchPage from "./SearchPage";
 import SignUpPage from "./SignUpPage";
 import VirtualFittingPage from "./VirtualFittingPage";
 import WishlistPage from "./WishlistPage";
-import CartPage from "./CartPage";
+import MyPage from "./MyPage";
 
 interface Product {
   id: number;
@@ -16,6 +16,7 @@ interface Product {
   price: string;
   image: string;
   category: string;
+  originalLink?: string;
 }
 
 const collections = [
@@ -29,9 +30,10 @@ export default function MainHomePage() {
   const [currentPage, setCurrentPage] = useState<string>("home");
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
+    !!localStorage.getItem("fitin_token")
+  );
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
-  const [cartCount, setCartCount] = useState<number>(0);
 
   const handleSearchSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
@@ -52,9 +54,14 @@ export default function MainHomePage() {
     setWishlistItems(prev => prev.filter(p => p.id !== id));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("fitin_token");
+    setIsLoggedIn(false);
+    setCurrentPage("home");
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* 네비게이션 바 */}
       <nav className="bg-white border-b border-gray-50 sticky top-0 z-50">
         <div className="flex items-center justify-between px-8 py-6">
           <div
@@ -91,16 +98,6 @@ export default function MainHomePage() {
               <User size={20} />
             </button>
 
-            <div onClick={() => setCurrentPage("cart")} className="relative cursor-pointer group">
-              <ShoppingBag
-                size={20}
-                className={`transition-colors ${currentPage === "cart" ? "text-[#3D1E5F]" : "group-hover:text-[#3D1E5F]"}`}
-              />
-              <span className="absolute -top-2 -right-2 bg-[#3D1E5F] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                {cartCount}
-              </span>
-            </div>
-
             <button
               onClick={() => setCurrentPage("vf")}
               className={`ml-4 font-bold text-sm transition-all cursor-pointer ${currentPage === "vf" ? "text-[#3D1E5F] scale-110" : "hover:opacity-70"}`}
@@ -110,7 +107,6 @@ export default function MainHomePage() {
           </div>
         </div>
 
-        {/* 검색창 */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -142,10 +138,8 @@ export default function MainHomePage() {
         </AnimatePresence>
       </nav>
 
-      {/* 컨텐츠 영역 */}
       <AnimatePresence mode="wait">
 
-        {/* 1. 홈 */}
         {currentPage === "home" && (
           <motion.main
             key="home"
@@ -168,7 +162,6 @@ export default function MainHomePage() {
           </motion.main>
         )}
 
-        {/* 2. 검색 */}
         {currentPage === "search" && (
           <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <SearchPage
@@ -180,7 +173,6 @@ export default function MainHomePage() {
           </motion.div>
         )}
 
-        {/* 3. 위시리스트 */}
         {currentPage === "wishlist" && (
           <motion.div key="wishlist" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <WishlistPage
@@ -190,33 +182,20 @@ export default function MainHomePage() {
           </motion.div>
         )}
 
-        {/* 4. 장바구니 */}
-        {currentPage === "cart" && (
-          <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <CartPage />
-          </motion.div>
-        )}
-
-        {/* 5. 가상 피팅룸 */}
         {currentPage === "vf" && (
           <motion.div key="vf" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <VirtualFittingPage />
           </motion.div>
         )}
 
-        {/* 6. 마이페이지 */}
         {currentPage === "mypage" && (
           <motion.div key="mypage" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {isLoggedIn ? (
-              <div className="p-8">
-                <h2 className="text-xl font-bold mb-4">마이페이지</h2>
-                <button
-                  onClick={() => setIsLoggedIn(false)}
-                  className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded cursor-pointer hover:bg-red-600 transition-colors"
-                >
-                  로그아웃 하기
-                </button>
-              </div>
+              <MyPage
+                onNavigateToWishlist={() => setCurrentPage("wishlist")}
+                onNavigateToVF={() => setCurrentPage("vf")}
+                onLogout={handleLogout}
+              />
             ) : (
               <div className="p-8">
                 <LoginPage
@@ -228,7 +207,6 @@ export default function MainHomePage() {
           </motion.div>
         )}
 
-        {/* 7. 회원가입 */}
         {currentPage === "signup" && (
           <motion.div key="signup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="p-8">
